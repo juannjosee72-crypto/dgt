@@ -20,6 +20,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
     body { font-family: "Open Sans", Arial, sans-serif; color: var(--texto); background: #fff; line-height: 1.45; }
     img { display: block; max-width: 100%; }
 
@@ -105,6 +106,32 @@
     .volver { display: inline-block; margin: 18px 0 40px; padding-left: 16px; color: var(--azul-dgt); font-weight: 600; font-size: 15px; }
     .volver:hover { text-decoration: underline; }
 
+    /* ===== Pantalla de resultado ===== */
+    .cuerpo-resultado { background: var(--form-bg); padding: 26px 24px 34px; }
+    .dato { margin-bottom: 16px; }
+    .dato .etq { display: block; font-weight: 700; font-size: 17px; }
+    .dato .val { display: block; padding-left: 20px; margin-top: 4px; font-size: 17px; }
+    .dato.sangria .etq { padding-left: 14px; }
+    .dato.sangria .val { padding-left: 34px; }
+
+    .faltas { width: 100%; border-collapse: collapse; margin: 24px 0 18px; }
+    .faltas caption { caption-side: top; }
+    .faltas .faltas-head {
+      background: #6b82a1; color: #fff; text-align: center;
+      font-weight: 700; font-size: 15px; letter-spacing: 1px; padding: 9px 6px;
+    }
+    .faltas th {
+      background: #7386a6; color: #fff; font-weight: 700; font-size: 12.5px;
+      text-align: center; padding: 9px 5px; border: 1px solid #fff;
+    }
+    .faltas td {
+      background: #fff; text-align: center; font-size: 17px; padding: 11px 6px;
+      border: 1px solid #b9c3cd;
+    }
+
+    .nota { font-size: 15px; margin-top: 10px; }
+    .nota a { color: var(--azul-dgt); }
+
     @media (max-width: 480px) {
       .barra-titulo { font-size: 15px; letter-spacing: 1px; }
       .sede-linea b { font-size: 20px; } .sede-linea span { font-size: 15px; }
@@ -127,7 +154,6 @@
     </div>
     <div class="sede-linea">
       <b>Sede electrónica</b>
-      <span>sede.dgt.gob.es</span>
     </div>
   </header>
 
@@ -189,22 +215,68 @@
       </div>
     </form>
 
+    <!-- ===== Pantalla de resultado (oculta hasta que hay coincidencia) ===== -->
+    <div class="barra-titulo" id="res-barra" hidden>
+      RESULTADO NOTAS DE EXÁMENES
+      <span class="ayuda" aria-hidden="true">?</span>
+    </div>
+    <div class="cuerpo-resultado" id="res-cuerpo" hidden>
+      <div class="dato"><span class="etq">APELLIDOS, NOMBRE:</span><span class="val" id="r-nombre"></span></div>
+      <div class="dato"><span class="etq">NIF/NIE:</span><span class="val" id="r-nif"></span></div>
+      <div class="dato sangria"><span class="etq">CLASE DE PERMISO:</span><span class="val" id="r-permiso"></span></div>
+      <div class="dato sangria"><span class="etq">TIPO DE PRUEBA:</span><span class="val" id="r-tipo"></span></div>
+      <div class="dato sangria"><span class="etq">FECHA DE EXAMEN:</span><span class="val" id="r-fecha"></span></div>
+      <div class="dato sangria"><span class="etq">CALIFICACIÓN EXAMEN:</span><span class="val" id="r-calif"></span></div>
+
+      <table class="faltas">
+        <tbody>
+          <tr><td class="faltas-head" colspan="3">FALTAS COMETIDAS</td></tr>
+          <tr><th>Claves Eliminatorias</th><th>Claves Deficientes</th><th>Claves Leves</th></tr>
+          <tr><td id="r-elim"></td><td id="r-defi"></td><td id="r-leve"></td></tr>
+        </tbody>
+      </table>
+
+      <p class="nota">(*) Puede consultar las claves de las faltas pulsando <a href="#" onclick="return false">aquí</a></p>
+      <p class="nota">Esta información sólo tiene valor informativo.</p>
+      <p class="nota">AVISO: Contra el informe desfavorable de aptitud en la prueba podrá presentar reclamación ante la Jefatura de Tráfico correspondiente.</p>
+
+      <div class="acciones">
+        <button type="button" class="boton" id="btn-nueva">Nueva consulta</button>
+      </div>
+    </div>
+
     <a class="volver" href="index.html">&larr; Volver al inicio</a>
   </div>
 
   <script>
     // ================================================================
-    //  CONFIGURACIÓN
-    //  Combinaciones que dan resultado "APTO".
-    //  Cuando me pases una combinación, la añado aquí.
-    //  Formato: { nif, fexamen, permiso, fnac }  (todo en texto, tal cual se escribe)
+    //  CONFIGURACIÓN DE COMBINACIONES
+    //  Cada combinación tiene DATOS DE ENTRADA (lo que se escribe en el
+    //  formulario) y DATOS DE SALIDA (lo que se muestra en el resultado).
+    //
+    //  ENTRADA  -> nif, fexamen, permiso, fnac
+    //  SALIDA   -> nombre (APELLIDOS, NOMBRE), tipoPrueba,
+    //              calificacion ("APTO" o "NO APTO"),
+    //              eliminatorias, deficientes, leves (número de fallos)
+    //
+    //  Dime los datos de cada combinación y los pego aquí.
     // ================================================================
-    var combinacionesApto = [
-      // Ejemplo (desactivado): { nif: "12345678Z", fexamen: "10/10/2025", permiso: "B", fnac: "01/01/2000" }
+    var combinaciones = [
+      // Ejemplo (desactivado). Copia este bloque y rellénalo:
+      // {
+      //   nif: "00000000T", fexamen: "28/10/2026", permiso: "B", fnac: "01/01/2000",
+      //   nombre: "APELLIDO1 APELLIDO2, NOMBRE",
+      //   tipoPrueba: "CIRCULACIÓN",
+      //   calificacion: "APTO",
+      //   eliminatorias: 0, deficientes: 0, leves: 0
+      // }
     ];
 
     var form = document.getElementById('form');
     var avisos = document.getElementById('avisos');
+    var barraForm = document.querySelector('.barra-titulo');
+    var resBarra = document.getElementById('res-barra');
+    var resCuerpo = document.getElementById('res-cuerpo');
 
     function limpiarAvisos() { avisos.className = 'avisos'; avisos.innerHTML = ''; }
 
@@ -214,38 +286,70 @@
       avisos.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function mostrarApto() {
-      avisos.className = 'avisos ok';
-      avisos.innerHTML = '<p>APTO</p>';
-      avisos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function set(id, txt) { document.getElementById(id).textContent = txt; }
+
+    function mostrarResultado(c, entrada) {
+      // Datos que se muestran: los que ha consultado la persona + los de la combinación
+      set('r-nombre', c.nombre || '');
+      set('r-nif', entrada.nif.toUpperCase());
+      set('r-permiso', entrada.permiso);
+      set('r-tipo', c.tipoPrueba || '');
+      set('r-fecha', entrada.fexamen);
+      set('r-calif', c.calificacion || '');
+      set('r-elim', c.eliminatorias);
+      set('r-defi', c.deficientes);
+      set('r-leve', c.leves);
+
+      // Ocultar formulario, mostrar resultado
+      barraForm.hidden = true;
+      form.hidden = true;
+      resBarra.hidden = false;
+      resCuerpo.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function volverAlFormulario() {
+      resBarra.hidden = true;
+      resCuerpo.hidden = true;
+      barraForm.hidden = false;
+      form.hidden = false;
+      form.reset();
+      limpiarAvisos();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault(); // formulario decorativo: no envía datos a ningún sitio
 
-      var nif = document.getElementById('nif').value.trim();
-      var fexamen = document.getElementById('fexamen').value.trim();
-      var permiso = document.getElementById('permiso').value;
-      var fnac = document.getElementById('fnac').value.trim();
+      var entrada = {
+        nif: document.getElementById('nif').value.trim(),
+        fexamen: document.getElementById('fexamen').value.trim(),
+        permiso: document.getElementById('permiso').value,
+        fnac: document.getElementById('fnac').value.trim()
+      };
 
       // 1) Campos obligatorios vacíos -> mismos avisos rojos que la web real
       var errores = [];
-      if (!nif)     errores.push('El campo "NIF/NIE" es obligatorio.');
-      if (!fexamen) errores.push('El campo "Fecha de examen" es obligatorio.');
-      if (!fnac)    errores.push('El campo "Fecha de nacimiento" es obligatorio.');
+      if (!entrada.nif)     errores.push('El campo "NIF/NIE" es obligatorio.');
+      if (!entrada.fexamen) errores.push('El campo "Fecha de examen" es obligatorio.');
+      if (!entrada.fnac)    errores.push('El campo "Fecha de nacimiento" es obligatorio.');
       if (errores.length) { mostrarRojo(errores); return; }
 
-      // 2) ¿Coincide con una combinación marcada como APTO?
-      var apto = combinacionesApto.some(function (c) {
-        return c.nif === nif && c.fexamen === fexamen && c.permiso === permiso && c.fnac === fnac;
-      });
-      if (apto) { mostrarApto(); return; }
+      // 2) ¿Coincide con una combinación registrada? (apto o no apto)
+      var encontrada = null;
+      for (var i = 0; i < combinaciones.length; i++) {
+        var c = combinaciones[i];
+        if (c.nif.toUpperCase() === entrada.nif.toUpperCase() && c.fexamen === entrada.fexamen &&
+            c.permiso === entrada.permiso && c.fnac === entrada.fnac) { encontrada = c; break; }
+      }
+      if (encontrada) { limpiarAvisos(); mostrarResultado(encontrada, entrada); return; }
 
       // 3) Por defecto, cualquier otra combinación -> aviso en rojo
       mostrarRojo(['No existen datos registrados para los valores introducidos.']);
     });
 
     form.addEventListener('reset', limpiarAvisos);
+    document.getElementById('btn-nueva').addEventListener('click', volverAlFormulario);
   </script>
 </body>
 </html>
