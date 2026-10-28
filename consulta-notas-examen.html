@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de notas de examen - DGT (recreación de clase)</title>
+  <style>
+    @font-face { font-family: "Open Sans"; font-weight: 400; font-display: swap; src: url("fonts/open-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 600; font-display: swap; src: url("fonts/open-sans-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 700; font-display: swap; src: url("fonts/open-sans-latin-700-normal.woff2") format("woff2"); }
+
+    :root {
+      --azul-dgt: #23568d;
+      --azul-acceso: #194383;
+      --celeste: #7fc3e0;
+      --gris-txt: #4a4a4a;
+      --gris-desact: #c9ced2;
+      --gris-claro: #eef0f2;
+      --texto: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Open Sans", Arial, sans-serif; color: var(--texto); background: #fff; line-height: 1.5; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== Cabecera ===== */
+    .cabecera {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; min-height: 70px;
+      border-bottom: 1px solid #eee;
+    }
+    .cabecera .ham { width: 20px; height: 16px; background: none; border: none; cursor: pointer; flex: none; }
+    .cabecera .ham svg { width: 20px; height: 16px; fill: #222; }
+    .cabecera .logo img { width: 64px; flex: none; }
+    .cabecera .sede { color: var(--azul-dgt); font-weight: 600; font-size: 15px; white-space: nowrap; }
+    .cabecera .acceso {
+      margin-left: auto; flex: none;
+      background: var(--azul-acceso); color: #fff;
+      font-size: 13px; font-weight: 400;
+      padding: 10px 12px; border-radius: 4px;
+      white-space: nowrap;
+    }
+    .cabecera .lupa { flex: none; }
+    .cabecera .lupa svg { width: 24px; height: 24px; }
+
+    /* ===== Contenido ===== */
+    .main { max-width: 900px; margin: 0 auto; padding: 22px 18px 60px; }
+
+    .migas { font-size: 19px; line-height: 1.6; margin-bottom: 28px; }
+    .migas a { color: var(--azul-dgt); font-weight: 700; }
+    .migas .sep { color: #888; margin: 0 6px; font-weight: 400; }
+    .migas .actual { color: #777; font-weight: 400; }
+
+    .cab-titulo { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .cab-titulo h1 {
+      font-size: 30px; font-weight: 400; color: #333;
+      text-transform: uppercase; line-height: 1.15; letter-spacing: .5px;
+    }
+    .acciones-doc { display: flex; gap: 12px; flex: none; }
+    .acciones-doc span {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--azul-dgt); display: grid; place-items: center;
+    }
+    .acciones-doc svg { width: 22px; height: 22px; fill: #fff; }
+    .linea-celeste { height: 5px; background: var(--celeste); margin: 10px 0 34px; border-radius: 2px; }
+
+    .sub { font-size: 22px; color: var(--gris-txt); margin-bottom: 24px; }
+
+    /* ===== Canales ===== */
+    .canales { display: grid; grid-template-columns: repeat(2, 1fr); gap: 36px 10px; max-width: 520px; }
+    .canal { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+    .canal .circulo {
+      width: 92px; height: 92px; border-radius: 50%;
+      background: var(--azul-dgt); display: grid; place-items: center;
+    }
+    .canal .circulo svg { width: 46px; height: 46px; fill: #fff; }
+    .canal .etiqueta { color: var(--azul-dgt); font-weight: 600; font-size: 20px; line-height: 1.25; }
+
+    .canal.desactivado { cursor: default; }
+    .canal.desactivado .circulo { background: var(--gris-desact); }
+    .canal.desactivado .etiqueta { color: #555; }
+
+    /* ===== Qué debes saber ===== */
+    .saber {
+      margin-top: 44px; background: var(--gris-claro);
+      border-radius: 8px; padding: 20px 18px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .saber .i {
+      width: 48px; height: 48px; flex: none; border-radius: 50%;
+      background: var(--celeste); color: #fff; font-weight: 700; font-style: italic;
+      font-size: 26px; display: grid; place-items: center; font-family: Georgia, serif;
+    }
+    .saber h2 { font-size: 22px; font-weight: 400; color: #444; }
+
+    .volver { display: inline-block; margin-top: 34px; color: var(--azul-dgt); font-weight: 600; font-size: 15px; }
+    .volver:hover { text-decoration: underline; }
+
+    @media (min-width: 720px) {
+      .canales { max-width: 640px; gap: 40px 40px; }
+      .cabecera .logo img { width: 90px; }
+      .cabecera .sede { font-size: 18px; }
+    }
+    @media (max-width: 400px) {
+      .cabecera .sede { display: none; }
+      .migas { font-size: 16px; }
+      .cab-titulo h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Cabecera ===== -->
+  <header class="cabecera">
+    <button class="ham" aria-label="Menú">
+      <svg viewBox="0 0 20 16"><rect width="20" height="2.6"/><rect y="6.7" width="20" height="2.6"/><rect y="13.4" width="20" height="2.6"/></svg>
+    </button>
+    <a href="index.html" class="logo"><img src="img/logo-dgt.png" alt="DGT"></a>
+    <span class="sede">Sede Electrónica</span>
+    <a href="#" class="acceso">Acceso a Mi DGT</a>
+    <button class="lupa" aria-label="Buscar">
+      <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="7" fill="none" stroke="#222" stroke-width="2.4"/><line x1="15" y1="15" x2="21" y2="21" stroke="#222" stroke-width="2.8" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <main class="main">
+    <!-- Migas de pan -->
+    <nav class="migas" aria-label="Ruta">
+      <a href="index.html">Inicio</a><span class="sep">&gt;</span><a href="#">Permisos de conducir</a><span class="sep">&gt;</span><a href="#">Exámenes y pruebas</a><span class="sep">&gt;</span><span class="actual">Consulta de notas de examen</span>
+    </nav>
+
+    <!-- Título -->
+    <div class="cab-titulo">
+      <h1>Consulta de notas de examen</h1>
+      <div class="acciones-doc" aria-hidden="true">
+        <span title="Editar"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></span>
+        <span title="Imprimir"><svg viewBox="0 0 24 24"><path d="M19 8h-1V3H6v5H5a3 3 0 0 0-3 3v6h4v3h12v-3h4v-6a3 3 0 0 0-3-3zM8 5h8v3H8V5zm8 14H8v-4h8v4zm3-7a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg></span>
+        <span title="Compartir"><svg viewBox="0 0 24 24"><path d="M18 16a3 3 0 0 0-2.4 1.2l-6.7-3.9a3 3 0 0 0 0-2.6l6.6-3.8A3 3 0 1 0 14.4 3l-.1.6 6.6 3.8a3 3 0 1 0-2.9 4.8l.1-.6-6.6 3.9A3 3 0 1 0 18 22a3 3 0 0 0 0-6z"/></svg></span>
+      </div>
+    </div>
+    <div class="linea-celeste"></div>
+
+    <!-- Canales -->
+    <h2 class="sub">Canales disponibles</h2>
+    <div class="canales">
+      <!-- Este es el que lleva al formulario -->
+      <a href="consultar-notas.html" class="canal">
+        <span class="circulo"><svg viewBox="0 0 24 24"><path d="M21 3H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h7v2H7v2h10v-2h-3v-2h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1zm-1 12H4V5h16v10z"/></svg></span>
+        <span class="etiqueta">Online - Datos<br>personales</span>
+      </a>
+
+      <a href="#" class="canal" onclick="return false">
+        <span class="circulo"><svg viewBox="0 0 24 24"><path d="M15.5 1h-8A2.5 2.5 0 0 0 5 3.5v17A2.5 2.5 0 0 0 7.5 23h8a2.5 2.5 0 0 0 2.5-2.5v-17A2.5 2.5 0 0 0 15.5 1zM16 18H7V4h9v14zm-4.5 3a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm.9-9.2 1.4 1.4-3.3 3.3L9 15.1l1-1 .9.9 1.5-1.5z"/></svg></span>
+        <span class="etiqueta">App miDGT</span>
+      </a>
+
+      <div class="canal desactivado">
+        <span class="circulo"><svg viewBox="0 0 24 24"><path d="M20 15.5a1 1 0 0 0-.7-1l-3-1a1 1 0 0 0-1 .3l-1.3 1.3a12 12 0 0 1-5.3-5.3L10 8.5a1 1 0 0 0 .3-1l-1-3a1 1 0 0 0-1-.7H5a1 1 0 0 0-1 1A16 16 0 0 0 20 20a1 1 0 0 0 1-1v-3.5z"/></svg></span>
+        <span class="etiqueta">Teléfono</span>
+      </div>
+
+      <a href="#" class="canal" onclick="return false">
+        <span class="circulo"><svg viewBox="0 0 24 24"><path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm0 2c-2.7 0-6 1.3-6 4v2h8v-2c0-1 .5-1.9 1.3-2.6A9 9 0 0 0 8 14zm9-3a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zm0 2c-.5 0-1 .1-1.5.2A3.9 3.9 0 0 1 17 16v4h5v-2c0-2.3-2.7-3-5-3z"/></svg></span>
+        <span class="etiqueta">Presencial</span>
+      </a>
+    </div>
+
+    <!-- Qué debes saber -->
+    <div class="saber">
+      <span class="i" aria-hidden="true">i</span>
+      <h2>¿Qué debes saber?</h2>
+    </div>
+
+    <a href="index.html" class="volver">&larr; Volver al inicio</a>
+  </main>
+</body>
+</html>
