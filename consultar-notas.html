@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultar notas de exámenes - Sede electrónica DGT (recreación de clase)</title>
+  <style>
+    @font-face { font-family: "Open Sans"; font-weight: 400; font-display: swap; src: url("fonts/open-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 600; font-display: swap; src: url("fonts/open-sans-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 700; font-display: swap; src: url("fonts/open-sans-latin-700-normal.woff2") format("woff2"); }
+
+    :root {
+      --titulo-bar: #5d6d8e;   /* barra azul del título */
+      --form-bg: #ced7de;      /* fondo del formulario */
+      --amarillo: #f4d018;     /* banda Gobierno de España */
+      --rojo: #aa0000;         /* avisos obligatorios */
+      --verde: #1a7a33;        /* aviso "apto" */
+      --azul-dgt: #23568d;
+      --texto: #222;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Open Sans", Arial, sans-serif; color: var(--texto); background: #fff; line-height: 1.45; }
+    img { display: block; max-width: 100%; }
+
+    /* ===== Cabecera institucional ===== */
+    .cab-gob { display: flex; align-items: stretch; border-bottom: 1px solid #ddd; }
+    .banda-esp {
+      background: var(--amarillo);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      flex: 1;
+      border-left: 10px solid #c60b1e;
+    }
+    .escudo {
+      width: 34px; height: 44px; flex: none;
+      border-radius: 3px 3px 17px 17px;
+      background: linear-gradient(180deg, #c60b1e 0 25%, #ffc400 25% 75%, #c60b1e 75%);
+      border: 1px solid #b89400;
+    }
+    .banda-esp .txt { font-size: 13px; font-weight: 700; color: #1a1a1a; line-height: 1.25; text-transform: uppercase; letter-spacing: .3px; }
+    .banda-esp .txt small { display: block; font-size: 11px; font-weight: 600; }
+    .cab-dgt { background: #fff; display: flex; align-items: center; padding: 10px 18px; }
+    .cab-dgt img { width: 96px; }
+
+    .sede-linea { display: flex; align-items: baseline; gap: 14px; padding: 14px 18px 18px; background: #f3f3f3; border-bottom: 1px solid #e2e2e2; }
+    .sede-linea b { font-size: 26px; font-weight: 400; color: #333; }
+    .sede-linea span { font-size: 20px; color: #9a9a9a; }
+
+    /* ===== Formulario ===== */
+    .panel { max-width: 640px; margin: 22px auto; padding: 0 14px; }
+
+    .barra-titulo {
+      background: var(--titulo-bar);
+      color: #fff;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ayuda {
+      width: 24px; height: 24px; flex: none;
+      border-radius: 50%; background: #2f5fa6; color: #fff;
+      font-size: 14px; font-weight: 700;
+      display: grid; place-items: center;
+      border: 2px solid #fff;
+    }
+
+    .cuerpo-form { background: var(--form-bg); padding: 26px 26px 36px; }
+    .cuerpo-form .intro { font-size: 17px; margin-bottom: 6px; }
+    .cuerpo-form .oblig { font-weight: 700; font-size: 17px; margin-bottom: 20px; }
+
+    .avisos { margin-bottom: 18px; }
+    .avisos p { color: var(--rojo); font-size: 17px; font-weight: 400; }
+    .avisos.ok p { color: var(--verde); font-weight: 700; font-size: 19px; }
+
+    .campo { margin-bottom: 22px; padding-left: 18px; }
+    .campo label { display: block; font-weight: 700; font-size: 18px; margin-bottom: 10px; }
+    .campo input[type="text"],
+    .campo select {
+      font-family: inherit; font-size: 17px;
+      border: 1px solid #9aa4ad; border-radius: 10px;
+      padding: 10px 12px; background: #fff; color: #222;
+      outline: none;
+    }
+    .campo input.nif { width: 100%; max-width: 420px; }
+    .campo input.fecha { width: 165px; }
+    .campo select { width: 100%; max-width: 360px; appearance: auto; }
+    .campo input:focus, .campo select:focus { border-color: var(--azul-dgt); box-shadow: 0 0 0 2px rgba(35,86,141,.25); }
+
+    .acciones { display: flex; justify-content: center; gap: 22px; margin-top: 30px; }
+    .boton {
+      font-family: inherit; font-weight: 700; font-size: 18px; color: #fff; cursor: pointer;
+      padding: 12px 34px; border-radius: 7px; border: 1px solid #000;
+      background: linear-gradient(180deg, #4a4a4a 0%, #111 100%);
+    }
+    .boton:active { background: linear-gradient(180deg, #111 0%, #4a4a4a 100%); }
+
+    .volver { display: inline-block; margin: 18px 0 40px; padding-left: 16px; color: var(--azul-dgt); font-weight: 600; font-size: 15px; }
+    .volver:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .barra-titulo { font-size: 15px; letter-spacing: 1px; }
+      .sede-linea b { font-size: 20px; } .sede-linea span { font-size: 15px; }
+      .cuerpo-form { padding: 20px 16px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Cabecera ===== -->
+  <header>
+    <div class="cab-gob">
+      <div class="banda-esp">
+        <div class="escudo" aria-hidden="true"></div>
+        <div class="txt">Gobierno<br>de España<small>Ministerio del Interior</small></div>
+      </div>
+      <div class="cab-dgt">
+        <img src="img/logo-dgt.png" alt="DGT Dirección General de Tráfico">
+      </div>
+    </div>
+    <div class="sede-linea">
+      <b>Sede electrónica</b>
+      <span>sede.dgt.gob.es</span>
+    </div>
+  </header>
+
+  <!-- ===== Panel del formulario ===== -->
+  <div class="panel">
+    <div class="barra-titulo">
+      CONSULTAR NOTAS DE EXÁMENES
+      <span class="ayuda" aria-hidden="true">?</span>
+    </div>
+
+    <form class="cuerpo-form" id="form" novalidate autocomplete="off">
+      <p class="intro">A continuación rellene los datos del formulario y pulse el botón "Buscar".</p>
+      <p class="oblig">(*): campo obligatorio</p>
+
+      <!-- Aquí aparecen los avisos (rojos) o el resultado "APTO" (verde) -->
+      <div class="avisos" id="avisos" aria-live="polite"></div>
+
+      <div class="campo">
+        <label for="nif">NIF/NIE (*):</label>
+        <input type="text" id="nif" class="nif" inputmode="text">
+      </div>
+
+      <div class="campo">
+        <label for="fexamen">Fecha de examen (*):</label>
+        <input type="text" id="fexamen" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric">
+      </div>
+
+      <div class="campo">
+        <label for="permiso">Clase de permiso (*):</label>
+        <select id="permiso">
+          <option value="">- Seleccione uno -</option>
+          <option>A</option>
+          <option>AM</option>
+          <option>AML (AM Limitado)</option>
+          <option>A1</option>
+          <option>A2</option>
+          <option>B</option>
+          <option>B+E</option>
+          <option>B96</option>
+          <option>C</option>
+          <option>C+E</option>
+          <option>C1</option>
+          <option>C1+E</option>
+          <option>D</option>
+          <option>D+E</option>
+          <option>D1</option>
+          <option>D1+E</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="fnac">Fecha de nacimiento (*):</label>
+        <input type="text" id="fnac" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric">
+      </div>
+
+      <div class="acciones">
+        <button type="submit" class="boton">Buscar</button>
+        <button type="reset" class="boton">Limpiar</button>
+      </div>
+    </form>
+
+    <a class="volver" href="index.html">&larr; Volver al inicio</a>
+  </div>
+
+  <script>
+    // ================================================================
+    //  CONFIGURACIÓN
+    //  Combinaciones que dan resultado "APTO".
+    //  Cuando me pases una combinación, la añado aquí.
+    //  Formato: { nif, fexamen, permiso, fnac }  (todo en texto, tal cual se escribe)
+    // ================================================================
+    var combinacionesApto = [
+      // Ejemplo (desactivado): { nif: "12345678Z", fexamen: "10/10/2025", permiso: "B", fnac: "01/01/2000" }
+    ];
+
+    var form = document.getElementById('form');
+    var avisos = document.getElementById('avisos');
+
+    function limpiarAvisos() { avisos.className = 'avisos'; avisos.innerHTML = ''; }
+
+    function mostrarRojo(lineas) {
+      avisos.className = 'avisos';
+      avisos.innerHTML = lineas.map(function (t) { return '<p>' + t + '</p>'; }).join('');
+      avisos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function mostrarApto() {
+      avisos.className = 'avisos ok';
+      avisos.innerHTML = '<p>APTO</p>';
+      avisos.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault(); // formulario decorativo: no envía datos a ningún sitio
+
+      var nif = document.getElementById('nif').value.trim();
+      var fexamen = document.getElementById('fexamen').value.trim();
+      var permiso = document.getElementById('permiso').value;
+      var fnac = document.getElementById('fnac').value.trim();
+
+      // 1) Campos obligatorios vacíos -> mismos avisos rojos que la web real
+      var errores = [];
+      if (!nif)     errores.push('El campo "NIF/NIE" es obligatorio.');
+      if (!fexamen) errores.push('El campo "Fecha de examen" es obligatorio.');
+      if (!fnac)    errores.push('El campo "Fecha de nacimiento" es obligatorio.');
+      if (errores.length) { mostrarRojo(errores); return; }
+
+      // 2) ¿Coincide con una combinación marcada como APTO?
+      var apto = combinacionesApto.some(function (c) {
+        return c.nif === nif && c.fexamen === fexamen && c.permiso === permiso && c.fnac === fnac;
+      });
+      if (apto) { mostrarApto(); return; }
+
+      // 3) Por defecto, cualquier otra combinación -> aviso en rojo
+      mostrarRojo(['No existen datos registrados para los valores introducidos.']);
+    });
+
+    form.addEventListener('reset', limpiarAvisos);
+  </script>
+</body>
+</html>
