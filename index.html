@@ -3,336 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DGT - Recreación visual (trabajo de clase)</title>
+  <title>Inicio - DGT (recreación visual, trabajo de clase)</title>
   <style>
-    /* ===== Variables ===== */
+    /* ===== Tipografía (Open Sans, incluida en /fonts) ===== */
+    @font-face { font-family: "Open Sans"; font-weight: 400; font-display: swap; src: url("fonts/open-sans-latin-400-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 600; font-display: swap; src: url("fonts/open-sans-latin-600-normal.woff2") format("woff2"); }
+    @font-face { font-family: "Open Sans"; font-weight: 700; font-display: swap; src: url("fonts/open-sans-latin-700-normal.woff2") format("woff2"); }
+
+    /* ===== Colores sacados de la captura ===== */
     :root {
-      --azul: #0b4ea2;
-      --azul-oscuro: #083a7a;
-      --azul-claro: #e8f0fb;
-      --texto: #1d1d1b;
-      --gris: #5f6368;
-      --gris-claro: #f4f5f7;
-      --borde: #dfe3e8;
-      --pie: #1f2a37;
+      --azul-dgt: #23568d;      /* azul oscuro del logo e ilustración */
+      --azul-claro: #3a85ca;    /* franja clara del logo */
+      --azul-boton: #2355a0;    /* texto "Ver más" */
+      --azul-ue: #113293;       /* bandera y texto UE */
+      --gris-iconos: #333333;   /* hamburguesa y lupa */
+      --gris-fondo: #ebebeb;    /* fondo sección Sede Electrónica */
+      --gris-borde: #cfcfcf;    /* borde botón "Ver más" */
+      --punto: #d6d6d6;         /* puntos del carrusel */
+      --punto-activo: #899691;
+      --amarillo: #f4b53e;      /* botón flotante */
+      --texto: #333333;
       --blanco: #ffffff;
-      --radio: 8px;
-      --ancho: 1200px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { -webkit-text-size-adjust: 100%; }
+
     body {
-      font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Open Sans", Arial, sans-serif;
       color: var(--texto);
       background: var(--blanco);
       line-height: 1.5;
     }
 
     a { color: inherit; text-decoration: none; }
-
-    .contenedor {
-      max-width: var(--ancho);
-      margin: 0 auto;
-      padding: 0 16px;
-    }
+    img { display: block; max-width: 100%; }
 
     /* ===== Cabecera ===== */
     .cabecera {
       background: var(--blanco);
-      border-bottom: 1px solid var(--borde);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .cabecera .contenedor {
+      height: 86px;
+      padding-top: 6px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      height: 72px;
+      padding-left: 22px;
+      padding-right: 28px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 1.9rem;
-      letter-spacing: 1px;
-      color: var(--azul);
-    }
-
-    .logo-texto small {
-      display: block;
-      font-size: 0.65rem;
-      font-weight: 500;
-      letter-spacing: 0;
-      color: var(--gris);
-      line-height: 1.2;
-    }
-
-    .menu ul {
-      display: flex;
-      list-style: none;
-      gap: 4px;
-    }
-
-    .menu a {
-      display: block;
-      padding: 10px 14px;
-      border-radius: var(--radio);
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: background 0.2s, color 0.2s;
-    }
-
-    .menu a:hover,
-    .menu a.activo {
-      background: var(--azul-claro);
-      color: var(--azul);
-    }
-
-    .boton-menu {
-      display: none;
+    .hamburguesa {
+      width: 16px;
+      height: 16px;
       background: none;
-      border: 1px solid var(--borde);
-      border-radius: var(--radio);
-      width: 44px;
-      height: 44px;
+      border: none;
       cursor: pointer;
-      font-size: 1.4rem;
-      color: var(--azul);
+      flex: none;
+    }
+    .hamburguesa svg { display: block; width: 16px; height: 16px; fill: var(--gris-iconos); }
+
+    .logo-dgt { margin-left: 13px; flex: none; }
+    .logo-dgt img { width: 75px; height: auto; }
+
+    .logo-ue { margin-left: 18px; flex: none; }
+    .logo-ue img { width: 111px; height: auto; }
+
+    .logo-prtr { margin-left: 14px; flex: none; }
+    .logo-prtr img { width: 31px; height: auto; }
+
+    .lupa {
+      margin-left: auto;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex: none;
+      padding: 0;
+    }
+    .lupa svg { display: block; width: 29.8px; height: 29.8px; margin-top: 7.5px; margin-right: -1.7px; }
+
+    /* ===== Carrusel principal ===== */
+    .carrusel {
+      position: relative;
+      height: 307px;
+      background: #2a2a2b url("img/hero-zaragoza.jpg") center top / cover no-repeat;
+      color: var(--blanco);
+      text-align: center;
+      overflow: hidden;
     }
 
-    /* ===== Franja buscador ===== */
-    .buscador {
-      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-oscuro) 100%);
-      color: var(--blanco);
-      padding: 64px 0;
+    .carrusel .contenido {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      padding: 0 14px;
+    }
+
+    .carrusel h2 {
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 30px;
+      margin-top: 68.3px;
+      letter-spacing: 0;
+    }
+
+    .carrusel p {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 17px;
+      margin-top: 22px;
+    }
+
+    .ver-mas {
+      position: absolute;
+      top: 198px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 39px;
+      background: var(--blanco);
+      border: 1px solid var(--gris-borde);
+      color: var(--azul-boton);
+      font-weight: 600;
+      font-size: 15.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .puntos {
+      position: absolute;
+      top: 284px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      list-style: none;
+    }
+    .puntos li { display: flex; }
+
+    .puntos button {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: none;
+      background: var(--punto);
+      cursor: pointer;
+      padding: 0;
+    }
+    .puntos button.activo { background: var(--punto-activo); }
+
+    /* ===== Sede Electrónica ===== */
+    .sede {
+      background: var(--gris-fondo);
+      padding: 19px 16px 40px;
       text-align: center;
     }
-
-    .buscador h1 {
-      font-size: 2.2rem;
-      margin-bottom: 24px;
+    .sede img { width: 237px; margin: 0 auto; }
+    .sede h2 {
+      margin-top: 6px;
+      color: var(--azul-dgt);
+      font-size: 22px;
       font-weight: 700;
     }
-
-    .buscador form {
-      display: flex;
-      max-width: 720px;
-      margin: 0 auto;
-      background: var(--blanco);
-      border-radius: 40px;
-      overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .buscador input {
-      flex: 1;
-      border: none;
-      padding: 18px 24px;
-      font-size: 1.05rem;
-      outline: none;
-      min-width: 0;
-    }
-
-    .buscador button {
-      border: none;
-      background: var(--azul);
+    .sede p { margin-top: 8px; font-size: 15px; }
+    .boton-azul {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 9px 26px;
+      background: var(--azul-dgt);
       color: var(--blanco);
-      padding: 0 28px;
-      margin: 6px;
-      border-radius: 32px;
-      font-size: 1rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
     }
 
-    .buscador button:hover { background: var(--azul-oscuro); }
-
-    .aviso-demo {
-      margin-top: 12px;
-      font-size: 0.85rem;
-      min-height: 1.3em;
-      opacity: 0.9;
-    }
-
-    /* ===== Tarjetas ===== */
-    .seccion { padding: 56px 0; }
-
-    .seccion h2 {
-      font-size: 1.7rem;
-      margin-bottom: 28px;
-      color: var(--azul-oscuro);
+    /* ===== Trámites destacados ===== */
+    .seccion { padding: 40px 16px; max-width: 1200px; margin: 0 auto; }
+    .seccion > h2 {
+      color: var(--azul-dgt);
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      padding-bottom: 8px;
+      border-bottom: 4px solid #7fc3e0;
     }
 
     .tarjetas {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 12px;
     }
 
     .tarjeta {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
       gap: 10px;
-      padding: 24px;
-      background: var(--blanco);
-      border: 1px solid var(--borde);
-      border-radius: var(--radio);
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    }
-
-    .tarjeta:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 24px rgba(11, 78, 162, 0.15);
-      border-color: var(--azul);
+      color: var(--azul-dgt);
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 1.35;
     }
 
     .tarjeta .icono {
-      width: 52px;
-      height: 52px;
+      width: 62px;
+      height: 62px;
       border-radius: 50%;
-      background: var(--azul-claro);
-      color: var(--azul);
+      background: var(--azul-dgt);
       display: grid;
       place-items: center;
-      font-size: 1.5rem;
     }
-
-    .tarjeta h3 { font-size: 1.15rem; }
-    .tarjeta p { color: var(--gris); font-size: 0.95rem; }
-
-    .tarjeta .flecha {
-      margin-top: auto;
-      color: var(--azul);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+    .tarjeta .icono svg { width: 30px; height: 30px; fill: var(--blanco); }
 
     /* ===== Actualidad ===== */
-    .actualidad { background: var(--gris-claro); }
+    .actualidad { background: var(--gris-fondo); }
 
     .noticias {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
-    .noticia {
-      background: var(--blanco);
-      border-radius: var(--radio);
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .noticia .imagen {
-      height: 170px;
-      display: grid;
-      place-items: center;
-      font-size: 3rem;
-      color: var(--blanco);
-    }
-
-    .imagen.img1 { background: linear-gradient(135deg, #0b4ea2, #4f8fe0); }
-    .imagen.img2 { background: linear-gradient(135deg, #c0392b, #e67e22); }
-    .imagen.img3 { background: linear-gradient(135deg, #1e8449, #58d68d); }
-
-    .noticia .cuerpo { padding: 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .noticia time { font-size: 0.8rem; color: var(--gris); text-transform: uppercase; letter-spacing: 0.5px; }
-    .noticia h3 { font-size: 1.1rem; line-height: 1.35; }
-    .noticia p { color: var(--gris); font-size: 0.93rem; }
-    .noticia .leer { margin-top: auto; color: var(--azul); font-weight: 600; font-size: 0.9rem; }
+    .noticia { background: var(--blanco); display: flex; flex-direction: column; }
+    .noticia .imagen { height: 160px; background-size: cover; background-position: center; }
+    .noticia .cuerpo { padding: 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .noticia time { font-size: 13px; color: #666; }
+    .noticia h3 { font-size: 17px; color: var(--azul-dgt); line-height: 1.3; }
+    .noticia p { font-size: 14px; }
+    .noticia .leer { margin-top: auto; color: var(--azul-boton); font-weight: 600; font-size: 14px; }
 
     /* ===== Pie ===== */
-    .pie {
-      background: var(--pie);
-      color: #cfd6df;
-      padding: 40px 0 24px;
-    }
-
-    .pie .superior {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      padding-bottom: 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .institucion {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .pie { background: #2b2b2b; color: #d0d0d0; padding: 32px 16px 80px; font-size: 14px; }
+    .pie .interior { max-width: 1200px; margin: 0 auto; }
+    .pie .institucion { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
     .escudo {
-      width: 44px;
-      height: 52px;
-      border-radius: 4px 4px 22px 22px;
+      width: 34px; height: 42px; flex: none;
+      border-radius: 3px 3px 17px 17px;
       background: linear-gradient(180deg, #c60b1e 0 25%, #ffc400 25% 75%, #c60b1e 75%);
     }
+    .institucion strong { display: block; color: var(--blanco); }
+    .enlaces-pie { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 20px; }
+    .enlaces-pie a:hover { text-decoration: underline; }
+    .aviso { font-size: 12px; opacity: 0.75; }
 
-    .institucion strong { display: block; color: var(--blanco); font-size: 1.05rem; }
-    .institucion span { font-size: 0.9rem; }
-
-    .enlaces-pie {
+    /* ===== Botón flotante amarillo ===== */
+    .flotante {
+      position: fixed;
+      left: 30px;
+      bottom: 0;
+      width: 56px;
+      height: 47px;
+      background: var(--amarillo);
+      border-radius: 10px 10px 0 0;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px 20px;
-      list-style: none;
-      font-size: 0.9rem;
+      justify-content: center;
+      padding-top: 10px;
+      z-index: 20;
+      border: none;
+      cursor: pointer;
     }
+    .flotante svg { width: 26px; height: 26px; fill: var(--blanco); }
 
-    .enlaces-pie a:hover { color: var(--blanco); text-decoration: underline; }
+    /* ===== Pantallas grandes ===== */
+    @media (min-width: 768px) {
+      .cabecera { height: 110px; padding-left: 40px; padding-right: 40px; }
+      .hamburguesa, .hamburguesa svg { width: 22px; height: 22px; }
+      .logo-dgt { margin-left: 24px; }
+      .logo-dgt img { width: 110px; }
+      .logo-ue { margin-left: 40px; }
+      .logo-ue img { width: 160px; }
+      .logo-prtr { margin-left: 24px; }
+      .logo-prtr img { width: 44px; }
+      .lupa svg { width: 32px; height: 32px; }
 
-    .pie .inferior {
-      padding-top: 20px;
-      font-size: 0.8rem;
-      text-align: center;
-      opacity: 0.8;
-    }
+      .carrusel { height: 460px; background-position: center 20%; }
+      .carrusel h2 { font-size: 36px; line-height: 44px; margin-top: 110px; }
+      .carrusel p { font-size: 20px; line-height: 26px; max-width: 760px; margin: 18px auto 0; }
+      .ver-mas { top: 300px; width: 170px; height: 46px; font-size: 18px; }
+      .puntos { top: 420px; }
 
-    /* ===== Responsive ===== */
-    @media (max-width: 960px) {
-      .tarjetas, .noticias { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 800px) {
-      .boton-menu { display: block; }
-
-      .menu {
-        position: absolute;
-        top: 72px;
-        left: 0;
-        right: 0;
-        background: var(--blanco);
-        border-bottom: 1px solid var(--borde);
-        display: none;
-      }
-
-      .menu.abierto { display: block; }
-
-      .menu ul {
-        flex-direction: column;
-        padding: 8px 16px 16px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .buscador { padding: 44px 0; }
-      .buscador h1 { font-size: 1.6rem; }
-      .buscador input { padding: 14px 18px; }
-      .buscador button { padding: 0 18px; }
-      .tarjetas, .noticias { grid-template-columns: 1fr; }
-      .seccion { padding: 40px 0; }
-      .pie .superior { flex-direction: column; align-items: flex-start; }
+      .sede img { width: 320px; }
+      .tarjetas { grid-template-columns: repeat(3, 1fr); }
+      .noticias { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -340,166 +293,159 @@
 
   <!-- ===== Cabecera ===== -->
   <header class="cabecera">
-    <div class="contenedor">
-      <a href="#" class="logo" aria-label="Inicio">
-        <span class="logo-texto">DGT<small>Dirección General<br>de Tráfico</small></span>
-      </a>
+    <button class="hamburguesa" aria-label="Menú">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <rect x="0" y="0" width="48" height="11"/>
+        <rect x="0" y="18" width="48" height="11"/>
+        <rect x="0" y="37" width="48" height="11"/>
+      </svg>
+    </button>
 
-      <button class="boton-menu" id="botonMenu" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <a href="#" class="logo-dgt" aria-label="DGT - Dirección General de Tráfico">
+      <img src="img/logo-dgt.png" alt="DGT Dirección General de Tráfico">
+    </a>
 
-      <nav class="menu" id="menu">
-        <ul>
-          <li><a href="#" class="activo">Inicio</a></li>
-          <li><a href="#">Permisos</a></li>
-          <li><a href="#">Vehículos</a></li>
-          <li><a href="#">Multas</a></li>
-          <li><a href="#">Seguridad vial</a></li>
-          <li><a href="#">Tu DGT</a></li>
-        </ul>
-      </nav>
-    </div>
+    <a href="#" class="logo-ue">
+      <img src="img/logo-ue-nextgen.png" alt="Financiado por la Unión Europea - NextGenerationEU">
+    </a>
+
+    <a href="#" class="logo-prtr">
+      <img src="img/logo-prtr.png" alt="Plan de Recuperación, Transformación y Resiliencia">
+    </a>
+
+    <button class="lupa" aria-label="Buscar">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <circle cx="11.3" cy="11.3" r="8.6" fill="none" stroke="#333" stroke-width="3.6"/>
+        <line x1="18" y1="18" x2="25" y2="25" stroke="#333" stroke-width="4.2" stroke-linecap="round"/>
+      </svg>
+    </button>
   </header>
 
   <main>
-    <!-- ===== Buscador ===== -->
-    <section class="buscador">
-      <div class="contenedor">
-        <h1>¿Qué estás buscando?</h1>
-        <!-- Formulario decorativo: no envía datos -->
-        <form id="formBuscar" autocomplete="off">
-          <input type="text" placeholder="Ej: renovar carnet, consultar puntos..." aria-label="Buscar">
-          <button type="submit">Buscar</button>
-        </form>
-        <p class="aviso-demo" id="avisoDemo"></p>
+    <!-- ===== Carrusel ===== -->
+    <section class="carrusel" aria-label="Destacados">
+      <div class="contenido">
+        <h2>Evento en Zaragoza</h2>
+        <p>Clausurada con éxito la segunda edición de la Conferencia Internacional de Seguridad Vial de la Moto</p>
       </div>
+      <a href="#" class="ver-mas">Ver más</a>
+      <ul class="puntos">
+        <li><button aria-label="Diapositiva 1"></button></li>
+        <li><button class="activo" aria-label="Diapositiva 2"></button></li>
+        <li><button aria-label="Diapositiva 3"></button></li>
+        <li><button aria-label="Diapositiva 4"></button></li>
+        <li><button aria-label="Diapositiva 5"></button></li>
+        <li><button aria-label="Diapositiva 6"></button></li>
+        <li><button aria-label="Diapositiva 7"></button></li>
+      </ul>
     </section>
 
-    <!-- ===== Tarjetas ===== -->
+    <!-- ===== Sede Electrónica ===== -->
+    <section class="sede">
+      <img src="img/sede-electronica.png" alt="Sede Electrónica">
+      <h2>Sede Electrónica</h2>
+      <p>Realiza tus trámites con la DGT de forma rápida y segura.</p>
+      <a href="#" class="boton-azul">Acceder</a>
+    </section>
+
+    <!-- ===== Trámites ===== -->
     <section class="seccion">
-      <div class="contenedor">
-        <h2>Trámites más solicitados</h2>
-        <div class="tarjetas">
-          <a href="#" class="tarjeta">
-            <div class="icono">🎯</div>
-            <h3>Consulta tus puntos</h3>
-            <p>Comprueba el saldo de puntos de tu permiso de conducir.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-          <a href="#" class="tarjeta">
-            <div class="icono">💳</div>
-            <h3>Paga tus multas</h3>
-            <p>Consulta y abona tus sanciones de tráfico pendientes.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-          <a href="#" class="tarjeta">
-            <div class="icono">📱</div>
-            <h3>miDGT</h3>
-            <p>Tu carnet y la documentación de tu vehículo en el móvil.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-          <a href="#" class="tarjeta">
-            <div class="icono">📅</div>
-            <h3>Cita previa</h3>
-            <p>Reserva cita en tu Jefatura de Tráfico.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-          <a href="#" class="tarjeta">
-            <div class="icono">🚗</div>
-            <h3>Informe de vehículo</h3>
-            <p>Obtén el historial y la situación administrativa de un vehículo.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-          <a href="#" class="tarjeta">
-            <div class="icono">🪪</div>
-            <h3>Permiso de conducir</h3>
-            <p>Obtención, renovación, duplicados y canjes.</p>
-            <span class="flecha">Acceder →</span>
-          </a>
-        </div>
+      <h2>Trámites más solicitados</h2>
+      <div class="tarjetas">
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-14a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg></span>
+          Consulta tus puntos
+        </a>
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>
+          Paga tus multas
+        </a>
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M16 1H8a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm-4 21a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm4-4H8V4h8v14z"/></svg></span>
+          miDGT
+        </a>
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 16H5V9h14v11zM7 11h5v5H7z"/></svg></span>
+          Cita previa
+        </a>
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M18.9 6a1.5 1.5 0 0 0-1.4-1h-11a1.5 1.5 0 0 0-1.4 1L3 12v8a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h12v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-8l-2.1-6zM6.5 16a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm11 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM5 11l1.5-4.5h11L19 11H5z"/></svg></span>
+          Informe de vehículo
+        </a>
+        <a href="#" class="tarjeta">
+          <span class="icono"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM9 7a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm5 10H4v-1c0-1.7 3.3-2.5 5-2.5s5 .8 5 2.5v1zm6-3h-5v-2h5v2zm0-4h-5V8h5v2z"/></svg></span>
+          Permiso de conducir
+        </a>
       </div>
     </section>
 
     <!-- ===== Actualidad ===== -->
-    <section class="seccion actualidad">
-      <div class="contenedor">
+    <div class="actualidad">
+      <section class="seccion">
         <h2>Actualidad</h2>
         <div class="noticias">
           <article class="noticia">
-            <div class="imagen img1">🛣️</div>
+            <div class="imagen" style="background:#2a2a2b"></div>
             <div class="cuerpo">
-              <time>12 de octubre</time>
-              <h3>Operación especial de tráfico para el puente</h3>
-              <p>Se prevén millones de desplazamientos por carretera durante el fin de semana largo.</p>
-              <a href="#" class="leer">Leer más →</a>
+              <time>Octubre</time>
+              <h3>Clausurada la Conferencia Internacional de Seguridad Vial de la Moto</h3>
+              <p>Zaragoza acoge la segunda edición del encuentro sobre movilidad segura en moto.</p>
+              <a href="#" class="leer">Leer más</a>
             </div>
           </article>
           <article class="noticia">
-            <div class="imagen img2">⚠️</div>
+            <div class="imagen" style="background:#23568d"></div>
             <div class="cuerpo">
-              <time>8 de octubre</time>
+              <time>Octubre</time>
               <h3>Campaña de vigilancia de velocidad</h3>
               <p>Durante esta semana se intensificarán los controles en vías convencionales.</p>
-              <a href="#" class="leer">Leer más →</a>
+              <a href="#" class="leer">Leer más</a>
             </div>
           </article>
           <article class="noticia">
-            <div class="imagen img3">🚲</div>
+            <div class="imagen" style="background:#3a85ca"></div>
             <div class="cuerpo">
-              <time>2 de octubre</time>
+              <time>Octubre</time>
               <h3>Consejos para circular con seguridad en bicicleta</h3>
               <p>Recomendaciones para ciclistas y conductores al compartir la vía.</p>
-              <a href="#" class="leer">Leer más →</a>
+              <a href="#" class="leer">Leer más</a>
             </div>
           </article>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   </main>
 
   <!-- ===== Pie ===== -->
   <footer class="pie">
-    <div class="contenedor">
-      <div class="superior">
-        <div class="institucion">
-          <div class="escudo" aria-hidden="true"></div>
-          <div>
-            <strong>Gobierno de España</strong>
-            <span>Ministerio del Interior</span>
-          </div>
+    <div class="interior">
+      <div class="institucion">
+        <div class="escudo" aria-hidden="true"></div>
+        <div>
+          <strong>Gobierno de España</strong>
+          <span>Ministerio del Interior</span>
         </div>
-        <ul class="enlaces-pie">
-          <li><a href="#">Aviso legal</a></li>
-          <li><a href="#">Accesibilidad</a></li>
-          <li><a href="#">Privacidad</a></li>
-          <li><a href="#">Contacto</a></li>
-          <li><a href="#">Mapa web</a></li>
-        </ul>
       </div>
-      <p class="inferior">Recreación visual con fines educativos (trabajo de clase). No es la web oficial de la DGT.</p>
+      <ul class="enlaces-pie">
+        <li><a href="#">Aviso legal</a></li>
+        <li><a href="#">Accesibilidad</a></li>
+        <li><a href="#">Protección de datos</a></li>
+        <li><a href="#">Mapa web</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+      <p class="aviso">Recreación visual con fines educativos (trabajo de clase). No es la web oficial de la DGT.</p>
     </div>
   </footer>
 
+  <!-- ===== Botón flotante ===== -->
+  <button class="flotante" aria-label="Atención al ciudadano">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+  </button>
+
   <script>
-    // Menú desplegable en móvil
-    const botonMenu = document.getElementById('botonMenu');
-    const menu = document.getElementById('menu');
-
-    botonMenu.addEventListener('click', () => {
-      const abierto = menu.classList.toggle('abierto');
-      botonMenu.setAttribute('aria-expanded', abierto);
-      botonMenu.textContent = abierto ? '✕' : '☰';
-    });
-
-    // Buscador decorativo: no envía nada
-    document.getElementById('formBuscar').addEventListener('submit', (e) => {
-      e.preventDefault();
-      document.getElementById('avisoDemo').textContent =
-        'Buscador de demostración: esta copia es solo visual.';
-    });
-
-    // Enlaces "#" no hacen saltar la página
-    document.querySelectorAll('a[href="#"]').forEach((enlace) => {
-      enlace.addEventListener('click', (e) => e.preventDefault());
+    // Por ahora los enlaces y botones son decorativos (su funcionamiento se añadirá más adelante)
+    document.querySelectorAll('a[href="#"]').forEach(function (enlace) {
+      enlace.addEventListener('click', function (e) { e.preventDefault(); });
     });
   </script>
 </body>
