@@ -228,7 +228,8 @@
       <div class="dato sangria"><span class="etq">FECHA DE EXAMEN:</span><span class="val" id="r-fecha"></span></div>
       <div class="dato sangria"><span class="etq">CALIFICACIÓN EXAMEN:</span><span class="val" id="r-calif"></span></div>
 
-      <table class="faltas">
+      <!-- Prueba práctica (circulación): faltas cometidas -->
+      <table class="faltas" id="tabla-practico">
         <tbody>
           <tr><td class="faltas-head" colspan="3">FALTAS COMETIDAS</td></tr>
           <tr><th>Claves Eliminatorias</th><th>Claves Deficientes</th><th>Claves Leves</th></tr>
@@ -236,7 +237,15 @@
         </tbody>
       </table>
 
-      <p class="nota">(*) Puede consultar las claves de las faltas pulsando <a href="#" onclick="return false">aquí</a></p>
+      <!-- Prueba teórica (control de conocimientos): preguntas falladas -->
+      <table class="faltas" id="tabla-teorico" hidden>
+        <tbody>
+          <tr><td class="faltas-head">PREGUNTAS FALLADAS</td></tr>
+          <tr><td id="r-falladas"></td></tr>
+        </tbody>
+      </table>
+
+      <p class="nota" id="nota-claves">(*) Puede consultar las claves de las faltas pulsando <a href="#" onclick="return false">aquí</a></p>
       <p class="nota">Esta información sólo tiene valor informativo.</p>
       <p class="nota">AVISO: Contra el informe desfavorable de aptitud en la prueba podrá presentar reclamación ante la Jefatura de Tráfico correspondiente.</p>
 
@@ -272,9 +281,10 @@
       {
         nif: "Y6086728E", fexamen: "05/11/2026", permiso: "B", fnac: "22/11/2005",
         nombre: "CHENTOUF, HOUSAM",
-        tipoPrueba: "CIRCULACIÓN",
+        prueba: "teorico",
+        tipoPrueba: "CONTROL DE CONOCIMIENTOS",
         calificacion: "APTO",
-        eliminatorias: 0, deficientes: 1, leves: 2
+        falladas: 2
       }
       // Para añadir más, copia el bloque de arriba (coma entre ellos) y cambia los datos.
     ];
@@ -303,9 +313,26 @@
       set('r-tipo', c.tipoPrueba || '');
       set('r-fecha', entrada.fexamen);
       set('r-calif', c.calificacion || '');
-      set('r-elim', c.eliminatorias);
-      set('r-defi', c.deficientes);
-      set('r-leve', c.leves);
+
+      var tablaPractico = document.getElementById('tabla-practico');
+      var tablaTeorico = document.getElementById('tabla-teorico');
+      var notaClaves = document.getElementById('nota-claves');
+
+      if (c.prueba === 'teorico') {
+        // Teórico: preguntas falladas, sin tabla de faltas ni nota de claves
+        set('r-falladas', c.falladas);
+        tablaPractico.hidden = true;
+        notaClaves.hidden = true;
+        tablaTeorico.hidden = false;
+      } else {
+        // Práctico (por defecto): faltas eliminatorias / deficientes / leves
+        set('r-elim', c.eliminatorias);
+        set('r-defi', c.deficientes);
+        set('r-leve', c.leves);
+        tablaTeorico.hidden = true;
+        tablaPractico.hidden = false;
+        notaClaves.hidden = false;
+      }
 
       // Ocultar formulario, mostrar resultado
       barraForm.hidden = true;
