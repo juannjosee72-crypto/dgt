@@ -178,7 +178,7 @@
 
       <div class="campo">
         <label for="fexamen">Fecha de examen (*):</label>
-        <input type="text" id="fexamen" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric">
+        <input type="text" id="fexamen" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10" autocomplete="off">
       </div>
 
       <div class="campo">
@@ -206,7 +206,7 @@
 
       <div class="campo">
         <label for="fnac">Fecha de nacimiento (*):</label>
-        <input type="text" id="fnac" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric">
+        <input type="text" id="fnac" class="fecha" placeholder="dd/mm/aaaa" inputmode="numeric" maxlength="10" autocomplete="off">
       </div>
 
       <div class="acciones">
@@ -357,6 +357,23 @@
 
     form.addEventListener('reset', limpiarAvisos);
     document.getElementById('btn-nueva').addEventListener('click', volverAlFormulario);
+
+    // ===== Formateo automático de fechas: dd/mm/aaaa =====
+    // Pone las barras solas al escribir (2 dígitos día, 2 mes, 4 año).
+    function formatearFecha(e) {
+      var campo = e.target;
+      var borrando = e.inputType === 'deleteContentBackward';
+      var d = campo.value.replace(/\D/g, '').slice(0, 8); // solo números, máx 8
+      var out = d;
+      if (d.length > 4)      out = d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4);
+      else if (d.length > 2) out = d.slice(0, 2) + '/' + d.slice(2);
+      // al borrar, no volver a poner una barra que el usuario acaba de quitar
+      if (!borrando && (d.length === 2 || d.length === 4)) out += '/';
+      campo.value = out;
+    }
+    ['fexamen', 'fnac'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', formatearFecha);
+    });
   </script>
 </body>
 </html>
