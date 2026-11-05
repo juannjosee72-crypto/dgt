@@ -285,6 +285,15 @@
         tipoPrueba: "CONTROL DE CONOCIMIENTOS",
         calificacion: "APTO",
         falladas: 2
+      },
+      {
+        nif: "77924491P", fexamen: "05/11/2026", permiso: "B", fnac: "28/11/2007",
+        nombre: "ASPERO RUBIO, ÀLEX",
+        prueba: "ambos",
+        tipoPrueba: "CONTROL DE CONOCIMIENTOS / CIRCULACIÓN",
+        calificacion: "APTO",
+        falladas: 1,
+        eliminatorias: 0, deficientes: 0, leves: 1
       }
       // Para añadir más, copia el bloque de arriba (coma entre ellos) y cambia los datos.
     ];
@@ -318,21 +327,19 @@
       var tablaTeorico = document.getElementById('tabla-teorico');
       var notaClaves = document.getElementById('nota-claves');
 
-      if (c.prueba === 'teorico') {
-        // Teórico: preguntas falladas, sin tabla de faltas ni nota de claves
-        set('r-falladas', c.falladas);
-        tablaPractico.hidden = true;
-        notaClaves.hidden = true;
-        tablaTeorico.hidden = false;
-      } else {
-        // Práctico (por defecto): faltas eliminatorias / deficientes / leves
+      // prueba: "teorico", "practico", "ambos" (o sin poner = práctico)
+      var verTeorico  = (c.prueba === 'teorico' || c.prueba === 'ambos');
+      var verPractico = (c.prueba === 'practico' || c.prueba === 'ambos' || !c.prueba);
+
+      if (verTeorico) { set('r-falladas', c.falladas); }
+      if (verPractico) {
         set('r-elim', c.eliminatorias);
         set('r-defi', c.deficientes);
         set('r-leve', c.leves);
-        tablaTeorico.hidden = true;
-        tablaPractico.hidden = false;
-        notaClaves.hidden = false;
       }
+      tablaTeorico.hidden = !verTeorico;
+      tablaPractico.hidden = !verPractico;
+      notaClaves.hidden = !verPractico;
 
       // Ocultar formulario, mostrar resultado
       barraForm.hidden = true;
